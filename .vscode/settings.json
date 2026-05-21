@@ -1,0 +1,18 @@
+{
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.profiles.windows": {
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--login", "-i"]
+    }
+  },
+  "files.associations": {
+    "*.h": "c",
+    "*.s": "arm"
+  },
+  "editor.formatOnSave": false,
+  "C_Cpp.default.compilerPath": "arm-none-eabi-gcc",
+  "C_Cpp.default.intelliSenseMode": "gcc-arm",
+  // Explicit path needed because VS Code does not always inherit the system PATH
+  "cortex-debug.openocdPath": "C:\\tools\\openocd\\bin\\openocd.exe"
+}

@@ -1,0 +1,48 @@
+name: "Lab 2.1 — Build Verification"
+
+on:
+  push:
+    paths:
+      - "src/**"
+      - "inc/**"
+      - "startup/**"
+      - "linker/**"
+      - "Makefile"
+      - ".github/workflows/build.yml"
+
+jobs:
+  build:
+    name: Build firmware with Makefile
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install arm-none-eabi toolchain
+        run: sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi
+
+      - name: Build (make all)
+        env:
+          EXTRA_CFLAGS: "-Werror=implicit-function-declaration -Werror=return-type -Werror=incompatible-pointer-types"
+        run: make all
+
+      - name: Verify artifacts
+        run: |
+          test -f output/lab2.elf
+          test -f output/lab2.bin
+          test -f output/lab2.hex
+
+      - name: Size report (make size)
+        run: make size
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-lab2
+          path: output/
+
+      - name: Verify clean removes output (make clean)
+        run: |
+          make clean
+          test ! -d output
