@@ -49,6 +49,7 @@ int main(void)
          *   a) Read gpio_read(B1_PORT, B1_PIN).
          *   b) Write the result with gpio_write(LD2_PORT, LD2_PIN, ...).
          */
-        gpio_write(LD2_PORT, LD2_PIN, gpio_read(B1_PORT, B1_PIN));
+         int value = gpio_read(B1_PORT, B1_PIN);
+        gpio_write(LD2_PORT, LD2_PIN, value);
     }
 }
