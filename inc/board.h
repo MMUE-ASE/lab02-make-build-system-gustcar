@@ -20,24 +20,23 @@
 
 /* TODO P1.1 — pin number of B1 within its GPIO port (0-15)
  *             Source: UM1974, section "Push-button"                  */
-#define B1_PIN 0U
+#define B1_PIN 13
 
 /* TODO P1.2 — base address of the GPIO port for B1
  *             Use the constants from gpio.h: GPIOA_BASE, GPIOB_BASE...
  *             Source: UM1974, section "Push-button"                  */
-#define B1_PORT GPIOA_BASE
-
+#define B1_PORT GPIOC_BASE
 /* -----------------------------------------------------------------------
  * User LED LD2 (blue)
  * ----------------------------------------------------------------------- */
 
 /* TODO P1.4 — pin number of LD2 within its GPIO port (0-15)
  *             Source: UM1974, section "LEDs"                         */
-#define LD2_PIN 1U
+#define LD2_PIN 7
 
 /* TODO P1.5 — base address of the GPIO port for LD2
  *             Use the constants from gpio.h: GPIOA_BASE, GPIOB_BASE...
  *             Source: UM1974, section "LEDs"                         */
-#define LD2_PORT GPIOD_BASE
+#define LD2_PORT GPIOB_BASE
 
 #endif /* BOARD_H */

@@ -19,6 +19,8 @@ int main(void)
      * Without this step GPIO registers do not respond.
      * Call gpio_enable_clock() for both B1_PORT and LD2_PORT.
      * ------------------------------------------------------------------ */
+     gpio_enable_clock(B1_PORT);
+     gpio_enable_clock(LD2_PORT);
 
 
     /* ------------------------------------------------------------------
@@ -26,7 +28,7 @@ int main(void)
      *
      * Call gpio_config_output() with LD2_PORT and LD2_PIN.
      * ------------------------------------------------------------------ */
-
+    gpio_config_output(LD2_PORT,LD2_PIN);
 
     /* ------------------------------------------------------------------
      * TODO 3 — Configure B1 as an input.
@@ -35,7 +37,7 @@ int main(void)
      * The MODER reset value is already input (00), but do it explicitly
      * so the code is self-documenting.
      * ------------------------------------------------------------------ */
-
+    gpio_config_input(B1_PORT,B1_PIN);
 
     /* ------------------------------------------------------------------
      * Main polling loop
@@ -47,6 +49,6 @@ int main(void)
          *   a) Read gpio_read(B1_PORT, B1_PIN).
          *   b) Write the result with gpio_write(LD2_PORT, LD2_PIN, ...).
          */
-
+        gpio_write(LD2_PORT, LD2_PIN, gpio_read(B1_PORT, B1_PIN));
     }
 }
