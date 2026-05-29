@@ -95,6 +95,9 @@ $(ASM_OBJ): $(ASM_SRC) | $(BUILDDIR)
 #output/main.o: src/main.c | $(BUILDDIR)
 #	$(CC) $(CFLAGS) -c $< -o $@
 
+# Fix
+OBJS = $(SRCS:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
+
 # P1.7 — Link all objects into the ELF.
 #         Target:       $(ELF)
 #         Dependencies: output/gpio.o output/main.o $(ASM_OBJ)
@@ -134,7 +137,8 @@ $(HEX): $(ELF)
 # P2.1 — Derive OBJS from SRCS using a substitution reference.
 #         Replace the src/%.c pattern with output/%.o
 #         Hint: $(SRCS:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
-OBJS = $(SRCS:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
+# moved rule to line before P1.7
+#OBJS = $(SRCS:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
 
 
 # P2.2 — Replace the two explicit C rules with one static pattern rule.
