@@ -25,11 +25,11 @@
 /* TODO P3.1 — bit mask to enable the GPIOB clock
  *             Form: (1U << bit_number)
  *             Source: RM0402, RCC_AHB1ENR, field GPIOBEN             */
-#define RCC_AHB1ENR_GPIOBEN (0U)
+#define RCC_AHB1ENR_GPIOBEN (1U << 1U)
 
 /* TODO P3.2 — bit mask to enable the GPIOC clock
  *             Source: RM0402, RCC_AHB1ENR, field GPIOCEN             */
-#define RCC_AHB1ENR_GPIOCEN (0U)
+#define RCC_AHB1ENR_GPIOCEN (1U << 2U)
 
 /* Other ports — provided for reference */
 #define RCC_AHB1ENR_GPIOAEN (1U << 0U)

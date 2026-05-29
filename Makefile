@@ -49,20 +49,20 @@ HEX = $(BUILDDIR)/$(TARGET).hex
 
 # P1.1 — List the two C source files (paths relative to the repo root).
 #         Example: SRCS = src/foo.c src/bar.c
-SRCS =
+SRCS = src/gpio.c src/main.c
 
 # Assembly startup — provided, do not change.
 ASM_SRC = startup/startup_stm32f412zg.s
 
 # P1.2 — Set the assembly object path: same filename as ASM_SRC but inside
 #         $(BUILDDIR)/ and with .o extension instead of .s
-ASM_OBJ =
+ASM_OBJ = $(BUILDDIR)/startup_stm32f412zg.o
 
 # P1.3 — Default target: "all" must depend on $(ELF), $(BIN), and $(HEX).
 #         Syntax: all: dep1 dep2 dep3
 #         Warning: leaving this line as "all:" with no dependencies makes
 #         Make silently succeed and build nothing.
-all:
+all: $(ELF) $(BIN) $(HEX)
 
 # --- Output directory --------------------------------------------------------
 # Provided — do not change. Creates output/ before any compile rule needs it.
@@ -76,7 +76,8 @@ $(BUILDDIR):
 #         Recipe:       $(CC) $(AS_FLAGS) -c $< -o $@
 #
 # YOUR RULE HERE
-
+$(ASM_OBJ): $(ASM_SRC) | $(BUILDDIR)
+	$(CC) $(AS_FLAGS) -c $< -o $@
 
 # P1.5 — Compile src/gpio.c into output/gpio.o  (explicit rule).
 #         Target:       output/gpio.o
@@ -84,13 +85,18 @@ $(BUILDDIR):
 #         Recipe:       $(CC) $(CFLAGS) -c $< -o $@
 #
 # YOUR RULE HERE
-
+#output/gpio.o: src/gpio.c | $(BUILDDIR)
+#	$(CC) $(CFLAGS) -c $< -o $@
 
 # P1.6 — Compile src/main.c into output/main.o  (explicit rule).
 #         Same form as P1.5 but for main.c.
 #
 # YOUR RULE HERE
+#output/main.o: src/main.c | $(BUILDDIR)
+#	$(CC) $(CFLAGS) -c $< -o $@
 
+# Fix
+OBJS = $(SRCS:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
 
 # P1.7 — Link all objects into the ELF.
 #         Target:       $(ELF)
@@ -99,14 +105,23 @@ $(BUILDDIR):
 #                       ($^ = all dependencies listed above)
 #
 # YOUR RULE HERE
-
+#$(ELF): output/gpio.o output/main.o $(ASM_OBJ)
+#	$(CC) $(LDFLAGS) -o $@ $^
+#$(OBJS): $(BUILDDIR)/%.o : $(SRCDIR)/%.c | $(BUILDDIR)
+#	$(CC) $(CFLAGS) -c $< -o $@
+$(ELF): $(OBJS) $(ASM_OBJ)
+	$(CC) $(LDFLAGS) -o $@ $^
 
 # P1.8 — Produce the binary and hex files from the ELF.
 #         $(BIN) rule: $(OBJCOPY) -O binary $< $@
 #         $(HEX) rule: $(OBJCOPY) -O ihex   $< $@
 #
 # YOUR TWO RULES HERE
+$(BIN): $(ELF)
+	$(OBJCOPY) -O binary $< $@
 
+$(HEX): $(ELF)
+	$(OBJCOPY) -O ihex $< $@
 
 # =============================================================================
 # PHASE 2 — Refactor: replace explicit C rules with a pattern rule
@@ -122,7 +137,9 @@ $(BUILDDIR):
 # P2.1 — Derive OBJS from SRCS using a substitution reference.
 #         Replace the src/%.c pattern with output/%.o
 #         Hint: $(SRCS:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
-OBJS =
+# moved rule to line before P1.7
+#OBJS = $(SRCS:$(SRCDIR)/%.c=$(BUILDDIR)/%.o)
+
 
 # P2.2 — Replace the two explicit C rules with one static pattern rule.
 #         Steps (do them together before running make — having both the explicit
@@ -137,7 +154,8 @@ OBJS =
 #               $(CC) $(CFLAGS) -c $< -o $@
 #
 # YOUR RULE HERE
-
+$(OBJS): $(BUILDDIR)/%.o : $(SRCDIR)/%.c | $(BUILDDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # =============================================================================
 # PHASE 3 — Utility targets
@@ -148,19 +166,23 @@ OBJS =
 #         Recipe: rm -rf $(BUILDDIR)
 #
 # YOUR RULE HERE
+clean:
+	rm -rf $(BUILDDIR)
 
 
 # P3.2 — "size": depends on $(ELF), prints the firmware size.
 #         Recipe: $(SIZE) $<
 #
 # YOUR RULE HERE
-
+size: $(ELF)
+	$(SIZE) $<
 
 # P3.3 — "flash": depends on $(ELF), programs the board.
 #         Recipe: bash scripts/flash.sh
 #
 # YOUR RULE HERE
-
+flash: $(ELF)
+	bash scripts/flash.sh
 
 # --- Help (provided — do not change) -----------------------------------------
 help:
@@ -177,3 +199,4 @@ help:
 #         List: all clean flash size help
 #
 # YOUR LINE HERE
+.PHONY: all clean flash size help
